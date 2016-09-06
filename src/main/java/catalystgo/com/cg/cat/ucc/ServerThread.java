@@ -1,6 +1,7 @@
 package catalystgo.com.cg.cat.ucc;
 
 import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,18 +32,28 @@ public void run() {
 }
 
 public void getVersion() {
+	showmsg("entered into getVersion()");
     try {
-        ObjectInputStream ois = new ObjectInputStream(
+        DataInputStream ois = new DataInputStream(
                 socket.getInputStream());
+        System.out.println("printing ois " + ois.toString());
         try {
-            String s = (String) ois.readObject();
+            int len = ois.readInt();
+            System.out.println("printing len " + len);
+            byte[] data = new byte[len];
+            ois.read(data, 0, len);
+            System.out.println("printing data " + data);
+            
+            String s = new String(data);
+            System.out.println("printing s " + s);
+            
             if (s.equals(version)) {
                 System.out.println("server- matched version :)");
             } else {
                 System.out.println("server- didnt match version :(");
                 System.exit(0);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     } catch (IOException e) {

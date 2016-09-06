@@ -1,17 +1,18 @@
 package catalystgo.com.cg.cat.ucc;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URL;
+
+import javax.print.DocFlavor.BYTE_ARRAY;
 
 public class Connections {
 	String IP, port;
@@ -56,9 +57,11 @@ public class Connections {
 		System.out.println("Printing String read: " + stringRead);
 		bufferedReader.close();
 
-		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-		oos.writeObject(stringRead);
-		oos.flush();
+		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+	    byte[] data = stringRead.getBytes();
+	    dos.writeInt(data.length);
+		dos.write(data);
+		dos.flush();
 	}
 
 	public void updating() throws IOException, FileNotFoundException {
